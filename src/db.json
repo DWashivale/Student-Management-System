@@ -1,0 +1,97 @@
+{
+  "students": [
+    {
+      "id": "64fc",
+      "name": "Akash",
+      "email": "akash@gmail.com",
+      "password": "000000",
+      "password_confirmation": "000000"
+    },
+    {
+      "id": "e744",
+      "name": "Rakesh",
+      "education": "BE",
+      "age": "23",
+      "email": "rakesh@gmail.com",
+      "phone": "0909090909",
+      "active": true
+    },
+    {
+      "id": "5ea9",
+      "name": "James Bond",
+      "education": "BTech",
+      "age": "34",
+      "email": "james@gmail.com",
+      "phone": "9999999999",
+      "active": true
+    },
+    {
+      "id": "d803",
+      "name": "Nikita Thorave",
+      "email": "nikita@gmail.com",
+      "password": "999999",
+      "password_confirmation": "999999"
+    },
+    {
+      "id": "12dd",
+      "name": "Amit",
+      "education": "BA",
+      "age": "22",
+      "email": "amit@gmail.com",
+      "phone": "9999999999",
+      "active": true
+    }
+  ],
+  "courses": [
+    {
+      "name": "Java, C, C#",
+      "instructor": "Pal",
+      "description": "Application developer jbkjhb",
+      "id": "0f74"
+    },
+    {
+      "name": "HTML, CSS, Javascript, React Js, Bootstrap",
+      "instructor": "Sanoj Sir cgsavg",
+      "description": "This all used for frontend web development.",
+      "id": "43e2"
+    },
+    {
+      "id": "469b",
+      "name": "Java, C, MongoDB",
+      "instructor": "Mane",
+      "description": "Pure Backend"
+    },
+    {
+      "name": "Cloud Computing",
+      "instructor": "Mane sir",
+      "description": "For backend",
+      "id": "1102"
+    }
+  ],
+  "batches": [
+    {
+      "batchId": "4645656",
+      "batchName": "Fullstack",
+      "courseName": "HTML, CSS, Javascript, React Js, Bootstrap",
+      "id": "9757"
+    },
+    {
+      "batchId": "5b3f",
+      "batchName": "Backend Batch",
+      "courseName": "Java, C, MongoDB",
+      "id": "5fc3"
+    },
+    {
+      "batchId": "1711",
+      "batchName": "Frontend Batch",
+      "courseName": "HTML, CSS, Javascript, React Js, Bootstrap",
+      "id": "9c8d"
+    },
+    {
+      "batchId": "ed7d",
+      "batchName": "Backend",
+      "courseName": "Java, C, C#",
+      "id": "c824"
+    }
+  ]
+}
