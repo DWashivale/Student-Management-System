@@ -43,9 +43,9 @@ function Registration({ setUser }) {
     if (Object.keys(errors).length === 0) {
       setIsSaving(true);
 
-      // Check if email already exists
+      // Check if email already exists in the `user` collection
       axios
-        .get(`http://localhost:8000/students?email=${email}`)
+        .get(`http://localhost:8000/user?email=${email}`)
         .then((response) => {
           if (response.data.length > 0) {
             setIsSaving(false);
@@ -53,7 +53,7 @@ function Registration({ setUser }) {
           } else {
             // Proceed with user creation
             axios
-              .post("http://localhost:8000/students", {
+              .post("http://localhost:8000/user", {
                 name: name,
                 email: email,
                 password: password,

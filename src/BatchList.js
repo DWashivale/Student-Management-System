@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
-const BatchList = ({ onBatchAdded }) => {
+const BatchList = ({ onBatchAdded, user }) => {
+  const navigate = useNavigate();
   const [batches, setBatches] = useState([]);
   const [courses, setCourses] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -14,6 +16,12 @@ const BatchList = ({ onBatchAdded }) => {
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [detailsBatch, setDetailsBatch] = useState(null);
 
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setBatchForm((prevForm) => ({
@@ -22,70 +30,62 @@ const BatchList = ({ onBatchAdded }) => {
     }));
   };
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
+ const handleFormSubmit = (e) => {
+  e.preventDefault();
 
-    if (!selectedBatch) {
-      // Add new batch
-      fetch("http://localhost:8000/batches", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(batchForm),
+  // If there's no selectedBatch (i.e., we're adding a new batch), generate a new ID
+  if (!selectedBatch) {
+    const newBatchId = Math.random().toString(36).substr(2, 9); // Generate random batchId
+
+    const newBatch = {
+      ...batchForm,
+      batchId: newBatchId, // Set the generated batchId
+    };
+
+    fetch("http://localhost:8000/batches", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newBatch),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setBatches((prevBatches) => [...prevBatches, data]);
+        setBatchForm({ batchName: "", courseName: "" });
+        setShowModal(false);
+        onBatchAdded(data.batchName);
       })
-        .then((res) => {
-          if (!res.ok) {
-            throw new Error("Failed to add new batch");
-          }
-          return res.json();
-        })
-        .then((data) => {
-          setBatches((prevBatches) => [...prevBatches, data]);
-          setBatchForm({
-            batchName: "",
-            courseName: "",
-          });
-          setShowModal(false);
-          onBatchAdded(data.batchName);
-        })
-        .catch((err) => console.log(err.message));
-    } else {
-      // Edit existing batch
-      fetch(`http://localhost:8000/batches/${selectedBatch.batchId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(batchForm),
+      .catch((err) => console.log(err.message));
+  } else {
+    // If we are editing an existing batch, update it
+    fetch(`http://localhost:8000/batches/${selectedBatch.batchId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(batchForm),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const updatedBatches = batches.map((batch) =>
+          batch.batchId === selectedBatch.batchId ? data : batch
+        );
+        setBatches(updatedBatches);
+        setBatchForm({ batchName: "", courseName: "" });
+        setShowModal(false);
       })
-        .then((res) => {
-          if (!res.ok) {
-            throw new Error("Failed to update batch");
-          }
-          return res.json();
-        })
-        .then((data) => {
-          const updatedBatches = batches.map((batch) =>
-            batch.batchId === selectedBatch.batchId ? data : batch
-          ); 
-          setBatches(updatedBatches);
-          setBatchForm({
-            batchName: "",
-            courseName: "",
-          });
-          setShowModal(false);
-        })
-        .catch((err) => console.log(err.message));
-    }
-  };
+      .catch((err) => console.log(err.message));
+  }
+};
+
 
   const handleEdit = (batch) => {
     setSelectedBatch(batch);
     setBatchForm({
       batchName: batch.batchName,
       courseName: batch.courseName,
-      batchId: batch.batchId
+      batchId: batch.batchId,
     });
     setShowModal(true);
   };
@@ -95,7 +95,9 @@ const BatchList = ({ onBatchAdded }) => {
       method: "DELETE",
     })
       .then(() => {
-        const updatedBatches = batches.filter((batch) => batch.batchId !== batchId);
+        const updatedBatches = batches.filter(
+          (batch) => batch.batchId !== batchId
+        );
         setBatches(updatedBatches);
       })
       .catch((err) => console.log(err.message));
@@ -109,7 +111,7 @@ const BatchList = ({ onBatchAdded }) => {
   useEffect(() => {
     fetch("http://localhost:8000/batches")
       .then((res) => res.json())
-      .then((data) => setBatches(data)) 
+      .then((data) => setBatches(data))
       .catch((err) => console.log(err.message));
 
     fetch("http://localhost:8000/courses")
@@ -117,6 +119,10 @@ const BatchList = ({ onBatchAdded }) => {
       .then((data) => setCourses(data))
       .catch((err) => console.log(err.message));
   }, []);
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="container">
@@ -126,13 +132,11 @@ const BatchList = ({ onBatchAdded }) => {
         </div>
         <div className="card-body">
           <div className="divbtn">
+          <div className="d-flex justify-content-start mb-2">
             <Button
               onClick={() => {
                 setSelectedBatch(null);
-                setBatchForm({
-                  batchName: "",
-                  courseName: "",
-                });
+                setBatchForm({ batchName: "", courseName: "" });
                 setShowModal(true);
               }}
               className="btn btn-success"
@@ -140,57 +144,61 @@ const BatchList = ({ onBatchAdded }) => {
             >
               Add New Batch (+)
             </Button>
+            </div>
           </div>
-          <table className="table table-bordered">
-            <thead
-              className="table table-dark table-hover"
-              style={{ backgroundColor: "red" }}
-            >
-              <tr>
-                <td>No</td>
-                <td>Batch ID</td>
-                <td>Batch Name</td>
-                <td>Course Name</td>
-                <td>Edit</td>
-                <td>Delete</td>
-                <td>Details</td>
-              </tr>
-            </thead>
-            <tbody>
-              {batches.map((batch, index) => (
-                <tr key={batch.batchId}>
-                  <td>{index + 1}</td>
-                  <td>{batch.batchId}</td>
-                  <td>{batch.batchName}</td>
-                  <td>{batch.courseName}</td>
-                  <td>
-                    <button
-                      className="btn btn-success"
-                      onClick={() => handleEdit(batch)}
-                    >
-                      Edit
-                    </button>
-                  </td>
-                  <td>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => handleDelete(batch.batchId)}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                  <td>
-                    <button
-                      className="btn btn-info"
-                      onClick={() => handleDetails(batch)}
-                    >
-                      Details
-                    </button>
-                  </td>
+          {/* Add table-responsive class here */}
+          <div className="table-responsive">
+            <table className="table table-bordered">
+              <thead
+                className="table table-dark table-hover"
+                style={{ backgroundColor: "red" }}
+              >
+                <tr>
+                  <td>No</td>
+                  <td>Batch ID</td>
+                  <td>Batch Name</td>
+                  <td>Course Name</td>
+                  <td>Edit</td>
+                  <td>Delete</td>
+                  <td>Details</td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {batches.map((batch, index) => (
+                  <tr key={batch.batchId}>
+                    <td>{index + 1}</td>
+                    <td>{batch.batchId}</td>
+                    <td>{batch.batchName}</td>
+                    <td>{batch.courseName}</td>
+                    <td>
+                      <button
+                        className="btn btn-success"
+                        onClick={() => handleEdit(batch)}
+                      >
+                        Edit
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => handleDelete(batch.batchId)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-info"
+                        onClick={() => handleDetails(batch)}
+                      >
+                        Details
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <Modal show={showModal} onHide={() => setShowModal(false)}>
             <Modal.Header closeButton>
               <Modal.Title>
@@ -219,7 +227,9 @@ const BatchList = ({ onBatchAdded }) => {
                     value={batchForm.courseName}
                     onChange={handleInputChange}
                   >
-                    <option value="" disabled>Select a course</option>
+                    <option value="" disabled>
+                      Select a course
+                    </option>
                     {courses.map((course) => (
                       <option key={course.id} value={course.name}>
                         {course.name}
@@ -229,7 +239,10 @@ const BatchList = ({ onBatchAdded }) => {
                 </div>
               </Modal.Body>
               <Modal.Footer>
-                <Button variant="secondary" onClick={() => setShowModal(false)}>
+                <Button
+                  variant="secondary"
+                  onClick={() => setShowModal(false)}
+                >
                   Cancel
                 </Button>
                 <Button variant="success" type="submit">
@@ -238,21 +251,33 @@ const BatchList = ({ onBatchAdded }) => {
               </Modal.Footer>
             </form>
           </Modal>
-          <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)}>
+          <Modal
+            show={showDetailsModal}
+            onHide={() => setShowDetailsModal(false)}
+          >
             <Modal.Header closeButton>
               <Modal.Title>Batch Details</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               {detailsBatch && (
                 <>
-                  <p><strong>Batch ID:</strong> {detailsBatch.batchId}</p>
-                  <p><strong>Batch Name:</strong> {detailsBatch.batchName}</p>
-                  <p><strong>Course Name:</strong> {detailsBatch.courseName}</p>
+                  <p>
+                    <strong>Batch ID:</strong> {detailsBatch.batchId}
+                  </p>
+                  <p>
+                    <strong>Batch Name:</strong> {detailsBatch.batchName}
+                  </p>
+                  <p>
+                    <strong>Course Name:</strong> {detailsBatch.courseName}
+                  </p>
                 </>
               )}
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={() => setShowDetailsModal(false)}>
+              <Button
+                variant="secondary"
+                onClick={() => setShowDetailsModal(false)}
+              >
                 Close
               </Button>
             </Modal.Footer>

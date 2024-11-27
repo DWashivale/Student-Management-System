@@ -5,20 +5,20 @@ import axios from "axios";
 function Login({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [students, setStudents] = useState([]);
+  const [users, setusers] = useState([]);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchStudents = async () => {
+    const fetchusers = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/students");
-        setStudents(response.data);
+        const response = await axios.get("http://localhost:8000/users");
+        setusers(response.data);
       } catch (error) {
-        console.error("Error fetching students:", error);
+        console.error("Error fetching users:", error);
       }
     };
-    fetchStudents();
+    fetchusers();
   }, []);
 
   const handleSave = async () => {
@@ -28,11 +28,11 @@ function Login({ setUser }) {
     }
 
     try {
-      const response = await axios.get("http://localhost:8000/students");
-      const updatedStudents = response.data;
-      setStudents(updatedStudents);
+      const response = await axios.get("http://localhost:8000/users");
+      const updatedusers = response.data;
+      setusers(updatedusers);
 
-      const foundStudent = updatedStudents.find(
+      const foundStudent = updatedusers.find(
         (student) => student.email === email
       );
       if (foundStudent) {
@@ -49,7 +49,7 @@ function Login({ setUser }) {
         setError("User Not Found!");
       }
     } catch (error) {
-      console.error("Error fetching students:", error);
+      console.error("Error fetching users:", error);
     }
   };
   return (
@@ -121,3 +121,4 @@ function Login({ setUser }) {
 }
 
 export default Login;
+

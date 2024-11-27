@@ -8,6 +8,7 @@ const Studcreate = () => {
   const [age, agechange] = useState("");
   const [email, emailidchange] = useState("");
   const [phone, phonechange] = useState("");
+  // eslint-disable-next-line
   const [active, activechange] = useState(true);
   const navigate = useNavigate();
   const [validation, valchange] = useState(false);
