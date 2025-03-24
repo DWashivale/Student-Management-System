@@ -38,71 +38,66 @@ function Registration({ setUser }) {
     return errors;
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const errors = validateForm();
     if (Object.keys(errors).length === 0) {
       setIsSaving(true);
-
-      // Check if email already exists in the `user` collection
-      axios
-        .get(`http://localhost:8000/user?email=${email}`)
-        .then((response) => {
-          if (response.data.length > 0) {
-            setIsSaving(false);
-            setErrors({ email: "Email already exists" });
-          } else {
-            // Proceed with user creation
-            axios
-              .post("http://localhost:8000/user", {
-                name: name,
-                email: email,
-                password: password,
-                password_confirmation: passwordConfirmation,
-              })
-              .then((response) => {
-                localStorage.setItem("user", JSON.stringify(response.data));
-                setUser(response.data);
-                Swal.fire({
-                  icon: "success",
-                  title: "Sign Up successful!",
-                  showConfirmButton: false,
-                  timer: 1500,
-                });
-                setIsSaving(false);
-                setName("");
-                setEmail("");
-                setPassword("");
-                setPasswordConfirmation("");
-                setErrors({});
-                navigate("/");
-              })
-              .catch((error) => {
-                Swal.fire({
-                  icon: "error",
-                  title: "An Error Occurred!",
-                  text: error.response.data.message || "Something went wrong!",
-                  showConfirmButton: false,
-                  timer: 1500,
-                });
-                setIsSaving(false);
-              });
-          }
-        })
-        .catch((error) => {
+  
+      try {
+        // Check if email already exists
+        const response = await axios.get("http://localhost:8000/users");
+        const existingUser = response.data.find((user) => user.email === email);
+  
+        if (existingUser) {
+          setErrors({ email: "Email already exists" });
+          setIsSaving(false);
+        } else {
+          // Proceed with user registration
+          const newUser = {
+            name,
+            email,
+            password,
+          };
+  
+          const registerResponse = await axios.post(
+            "http://localhost:8000/users",
+            newUser
+          );
+  
+          localStorage.setItem("user", JSON.stringify(registerResponse.data));
+          setUser(registerResponse.data);
+  
           Swal.fire({
-            icon: "error",
-            title: "An Error Occurred!",
-            text: error.response.data.message || "Something went wrong!",
+            icon: "success",
+            title: "Sign Up Successful!",
             showConfirmButton: false,
             timer: 1500,
           });
+  
+          // Reset form fields
+          setName("");
+          setEmail("");
+          setPassword("");
+          setPasswordConfirmation("");
+          setErrors({});
           setIsSaving(false);
+  
+          // Redirect to login page
+          navigate("/login");
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "An Error Occurred!",
+          text: error.response?.data?.message || "Something went wrong!",
         });
+        setIsSaving(false);
+      }
     } else {
       setErrors(errors);
     }
   };
-
+  
   return (
     <div>
       <div className="container">
@@ -121,11 +116,9 @@ function Registration({ setUser }) {
                         setName(event.target.value);
                       }}
                       type="text"
-                      className={`form-control ${
-                        errors.name ? "is-invalid" : ""
-                      }`}
+                      className={`form-control ${errors.name ? "is-invalid" : ""}`}
                       id="floatingInput"
-                      placeholder="Jhon Joe"
+                      placeholder="John Doe"
                     />
                     <label htmlFor="floatingInput">Name</label>
                     {errors.name && (
@@ -139,9 +132,7 @@ function Registration({ setUser }) {
                         setEmail(event.target.value);
                       }}
                       type="email"
-                      className={`form-control ${
-                        errors.email ? "is-invalid" : ""
-                      }`}
+                      className={`form-control ${errors.email ? "is-invalid" : ""}`}
                       id="floatingemail"
                       placeholder="name@example.com"
                     />
@@ -157,9 +148,7 @@ function Registration({ setUser }) {
                         setPassword(event.target.value);
                       }}
                       type="password"
-                      className={`form-control ${
-                        errors.password ? "is-invalid" : ""
-                      }`}
+                      className={`form-control ${errors.password ? "is-invalid" : ""}`}
                       id="floatingPassword"
                       placeholder="Password"
                     />
@@ -175,9 +164,7 @@ function Registration({ setUser }) {
                         setPasswordConfirmation(event.target.value);
                       }}
                       type="password"
-                      className={`form-control ${
-                        errors.passwordConfirmation ? "is-invalid" : ""
-                      }`}
+                      className={`form-control ${errors.passwordConfirmation ? "is-invalid" : ""}`}
                       id="password_confirmation"
                       name="password_confirmation"
                       placeholder="Password Confirmation"

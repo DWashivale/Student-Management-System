@@ -1,0 +1,64 @@
+{
+  "students": 
+    {
+      "id": "a818",
+      "name": "Abhay Dhavle",
+      "education": "B.Sc IT",
+      "age": "26",
+      "email": "abhay.dhavle@gmail.com",
+      "phone": "9865326565",
+      "batchId":"121",
+      "courseId":"222"
+    },
+    "students": [
+    {
+      "id": "7bf6",
+      "name": "Sharad Chikane",
+      "education": "MBA",
+      "age": "30",
+      "email": "sharad@gmail.com",
+      "phone": "9865326565",
+      "batchId": "4645656",
+      "courseId": "dwwgo1akw"
+    }
+  ],
+  "users": [
+    {
+      "id": "b0a7",
+      "name": "Sharad Chikane",
+      "email": "sharad@gmail.com",
+      "password": "123456",
+      "password_confirmation": "123456",
+      "type": "student"
+    },
+    {
+      "id": "614e",
+      "name": "Dattatray Washivale",
+      "email": "dattatray@gmail.com",
+      "password": "123123",
+      "password_confirmation": "123123",
+      "type": "admin"
+    }
+  ],
+  "courses": [
+    {
+      "id": "d15b",
+      "name": "HTML, CSS, Javascript, JQuery, Bootstrap, Javascript",
+      "instructor": "Sanoj Sir",
+      "description": "Frontend"
+    }
+  ],
+  "batches": [
+    {
+      "batchId": "d15b",
+      "batchName": "Frontend",
+      "courseName": "HTML, CSS"
+    },
+    {
+      "id": "d56e",
+      "batchName": "Web Developer",
+      "courseName": "HTML, CSS, Javascript, JQuery, Bootstrap, Javascript",
+      "batchId": "niuzw9eu9"
+    }
+  ]
+}

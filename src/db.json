@@ -1,116 +1,73 @@
 {
   "students": [
     {
-      "id": "7bf6",
-      "name": "Sharad Chikane",
-      "education": "MBA",
-      "age": "30",
-      "email": "sharad@gmail.com",
-      "phone": "9865326565"
-    },
-    {
-      "id": "2778",
-      "name": "Dattatray Washivale",
+      "id": "e733",
+      "name": "Dattatray Tukaram Washivale",
       "education": "B.Sc IT",
       "age": "26",
       "email": "dattatraywashivale23498@gmail.com",
-      "phone": "7588340895"
+      "phone": "07588340895",
+      "courseId": "ee08",
+      "batchId": "s0btb8cvm"
     },
     {
-      "id": "10bc",
-      "name": "Ram Gole",
+      "id": "14cd",
+      "name": "Dattatray Tukaram Washivale",
       "education": "MBA",
-      "age": "24",
-      "email": "ram@gmail.com",
-      "phone": "9865326565"
+      "age": "11",
+      "email": "dattatraywashivale23498@gmail.com",
+      "phone": "07588340895",
+      "courseId": "5f9f",
+      "batchId": "7-8 am"
+    },
+    {
+      "id": "2cc2",
+      "name": "Prathmesh Pathak",
+      "education": "MBA",
+      "age": "25",
+      "email": "prathmesh@gmail.com",
+      "phone": "3216549870",
+      "courseId": "ee08",
+      "batchId": "2-3 pm"
     }
   ],
   "users": [
     {
-      "id": "b0a7",
-      "name": "Dattatray Washivale",
-      "email": "dattatray@gmail.com",
-      "password": "123456",
-      "password_confirmation": "123456",
-      "type": "student"
-    },
-    {
-      "id": "b0a7",
-      "name": "Sharad Chikane",
+      "id": "b947",
+      "name": "sharad",
       "email": "sharad@gmail.com",
-      "password": "123456",
-      "password_confirmation": "123456",
-      "type": "admin"
+      "password": "123456"
     }
   ],
   "courses": [
     {
-      "id": "dwwgo1akw",
-      "name": "HTML, CSS, Javascript, JQuery, Bootstrap, Javascript",
-      "instructor": "Sanoj Sir",
-      "description": "UI Development"
+      "name": "Frontend Web Development",
+      "instructor": "Kulkarni Sir",
+      "description": "HTML, CSS, Javascript, Bootstrap",
+      "id": "5f9f"
     },
     {
-      "id": "28bd",
-      "name": "React js, Angular Js",
+      "name": "Backend Development",
       "instructor": "Sanoj Sir",
-      "description": "For UI Development"
-    },
-    {
-      "id": "ab46",
-      "name": "HTML, CSS, Bootstrap",
-      "instructor": "Sanoj Sir",
-      "description": "For Frontend UI"
+      "description": ".Net, Java, C, C#, C++, ",
+      "id": "ee08"
     }
   ],
   "batches": [
     {
-      "batchId": "4645656",
-      "batchName": "Fullstack",
-      "courseName": "HTML, CSS, Javascript, React Js, Bootstrap",
-      "id": "9757"
+      "id": "pp5u7diqm",
+      "batchName": "7-8 am",
+      "courseId": "5f9f"
     },
     {
-      "id": "0b1b",
-      "batchName": "UI Developer",
-      "courseName": "Angular, React Js, Vue Js",
-      "batchId": "agyfa4307"
+      "id": "hn4kvhob6",
+      "batchName": "2-3 pm",
+      "courseId": "ee08"
     },
     {
-      "id": "6944",
-      "batchName": "FullStack Developer",
-      "courseName": "Angular with .net",
-      "batchId": "oukbvyrxc"
-    },
-    {
-      "id": "6cf0",
-      "batchName": "UI Developer",
-      "courseName": "HTML, CSS, Javascript, JQuery, Bootstrap, Javascript",
-      "batchId": "te4y15rgh"
-    },
-    {
-      "id": "72e5",
-      "batchName": "UI Developer",
-      "courseName": "React js, Angular Js",
-      "batchId": "1bf6lgonn"
-    },
-    {
-      "id": "1482",
-      "batchName": "bgftbb",
-      "courseName": "",
-      "batchId": "or22rup77"
-    },
-    {
-      "id": "037d",
-      "batchName": "Web Developer",
-      "courseName": "fwg",
-      "batchId": "sl7rfvztf"
-    },
-    {
-      "id": "2ddb",
-      "batchName": "App Deveopment",
-      "courseName": "HTML, CSS, Bootstrap",
-      "batchId": "clzx9lmof"
+      "id": "s0btb8cvm",
+      "batchName": "7-8 am",
+      "courseId": "ee08"
     }
   ]
 }

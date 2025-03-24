@@ -67,7 +67,6 @@ const Course = ({ user }) => {
       })
         .then((res) => res.json())
         .then((data) => {
-          // Assuming the backend returns the newly created course with an id
           setCourses((prevCourses) => [...prevCourses, data]);
           setCourseForm({
             name: "",
@@ -75,7 +74,6 @@ const Course = ({ user }) => {
             description: "",
           });
           setShowModal(false);
-          navigate("/BatchList");
         })
         .catch((err) => console.log(err.message));
     }
@@ -123,32 +121,29 @@ const Course = ({ user }) => {
   }
 
   return (
-    <div className="container">
+    <div className="container mt-4">
       <div className="card">
         <div className="card-title">
           <h2>Course List</h2>
         </div>
         <div className="card-body">
-          <div className="divbtn">
-            <div className="d-flex justify-content-start mb-2">
-              <Button
-                onClick={() => {
-                  setSelectedCourse(null);
-                  setShowModal(true);
-                }}
-                className="btn btn-success"
-                style={{ marginBottom: "4px", padding: "3px" }}
-              >
-                Add New Course (+)
-              </Button>
+            <div className="divbtn">
+              <div className="d-flex justify-content-start mb-2">
+                <Button
+                  onClick={() => {
+                    setSelectedCourse(null);
+                    setShowModal(true);
+                  }}
+                  className="btn btn-success"
+                  style={{ marginBottom: "4px", padding: "3px" }}
+                >
+                  Add New Course (+)
+                </Button>
+              </div>
             </div>
-          </div>
           <div className="table-responsive">
             <table className="table table-bordered">
-              <thead
-                className="table table-dark table-hover"
-                style={{ backgroundColor: "red" }}
-              >
+              <thead className="table table-dark table-hover">
                 <tr>
                   <td>No</td>
                   <td>Course ID</td>
@@ -168,22 +163,22 @@ const Course = ({ user }) => {
                     <td>{course.name}</td>
                     <td>{course.instructor}</td>
                     <td>{course.description}</td>
-                    <td>
-                      <button
-                        className="btn btn-success"
-                        onClick={() => handleEdit(course)}
-                      >
-                        Edit
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => handleDelete(course.id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
+                      <td>
+                        <button
+                          className="btn btn-success"
+                          onClick={() => handleEdit(course)}
+                        >
+                          Edit
+                        </button>
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => handleDelete(course.id)}
+                        >
+                          Delete
+                        </button>
+                      </td>
                     <td>
                       <button
                         className="btn btn-info"
@@ -277,6 +272,8 @@ const Course = ({ user }) => {
                 </Button>
               </Modal.Footer>
             </Modal>
+            {/* Modals (Add/Edit, Details) */}
+            {/* Same modal logic from your original code */}
           </div>
         </div>
       </div>

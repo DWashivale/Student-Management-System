@@ -1,0 +1,9 @@
+/* Container styling */
+.login-container {
+    display: flex;
+    overflow: hidden;
+    max-width: 800px;
+    width: 100%;
+    background: #fff;
+  }
+  

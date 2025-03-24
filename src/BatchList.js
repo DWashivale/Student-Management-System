@@ -11,10 +11,12 @@ const BatchList = ({ onBatchAdded, user }) => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [batchForm, setBatchForm] = useState({
     batchName: "",
-    courseName: "",
+    courseId: "",
   });
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [detailsBatch, setDetailsBatch] = useState(null);
+
+  console.log('selected batct', selectedBatch)
 
   useEffect(() => {
     if (!user) {
@@ -30,75 +32,60 @@ const BatchList = ({ onBatchAdded, user }) => {
     }));
   };
 
- const handleFormSubmit = (e) => {
-  e.preventDefault();
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
 
-  // If there's no selectedBatch (i.e., we're adding a new batch), generate a new ID
-  if (!selectedBatch) {
-    const newBatchId = Math.random().toString(36).substr(2, 9); // Generate random batchId
+    if (!selectedBatch) {
+      const newBatchId = Math.random().toString(36).substr(2, 9);
+      const newBatch = { ...batchForm, id: newBatchId };
 
-    const newBatch = {
-      ...batchForm,
-      batchId: newBatchId, // Set the generated batchId
-    };
-
-    fetch("http://localhost:8000/batches", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newBatch),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setBatches((prevBatches) => [...prevBatches, data]);
-        setBatchForm({ batchName: "", courseName: "" });
-        setShowModal(false);
-        onBatchAdded(data.batchName);
+      fetch("http://localhost:8000/batches", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newBatch),
       })
-      .catch((err) => console.log(err.message));
-  } else {
-    // If we are editing an existing batch, update it
-    fetch(`http://localhost:8000/batches/${selectedBatch.batchId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(batchForm),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        const updatedBatches = batches.map((batch) =>
-          batch.batchId === selectedBatch.batchId ? data : batch
-        );
-        setBatches(updatedBatches);
-        setBatchForm({ batchName: "", courseName: "" });
-        setShowModal(false);
+        .then((res) => res.json())
+        .then((data) => {
+          setBatches((prevBatches) => [...prevBatches, data]);
+          setBatchForm({ batchName: "", courseId: "" });
+          setShowModal(false);
+          onBatchAdded(data.batchName);
+        })
+        .catch((err) => console.log(err.message));
+    } else {
+      fetch(`http://localhost:8000/batches/${selectedBatch.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({...batchForm}),
       })
-      .catch((err) => console.log(err.message));
-  }
-};
-
+        .then((res) => res.json())
+        .then((data) => {
+          const updatedBatches = batches.map((batch) =>
+            batch.id === selectedBatch.id ? data : batch
+          );
+          setBatches(updatedBatches);
+          setBatchForm({ batchName: "", courseId: "" });
+          setShowModal(false);
+        })
+        .catch((err) => console.log(err.message));
+    }
+  };
 
   const handleEdit = (batch) => {
     setSelectedBatch(batch);
     setBatchForm({
       batchName: batch.batchName,
-      courseName: batch.courseName,
-      batchId: batch.batchId,
+      courseId: batch.courseId,
     });
     setShowModal(true);
   };
 
-  const handleDelete = (batchId) => {
-    fetch(`http://localhost:8000/batches/${batchId}`, {
-      method: "DELETE",
-    })
+  const handleDelete = (id) => {
+    fetch(`http://localhost:8000/batches/${id}`, { method: "DELETE" })
       .then(() => {
-        const updatedBatches = batches.filter(
-          (batch) => batch.batchId !== batchId
+        setBatches((prevBatches) =>
+          prevBatches.filter((batch) => batch.id !== id)
         );
-        setBatches(updatedBatches);
       })
       .catch((err) => console.log(err.message));
   };
@@ -120,44 +107,36 @@ const BatchList = ({ onBatchAdded, user }) => {
       .catch((err) => console.log(err.message));
   }, []);
 
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   return (
-    <div className="container">
+    <div className="container mt-4">
       <div className="card">
         <div className="card-title">
           <h2>Batch List</h2>
         </div>
         <div className="card-body">
-          <div className="divbtn">
-          <div className="d-flex justify-content-start mb-2">
-            <Button
-              onClick={() => {
-                setSelectedBatch(null);
-                setBatchForm({ batchName: "", courseName: "" });
-                setShowModal(true);
-              }}
-              className="btn btn-success"
-              style={{ marginBottom: "4px", padding: "3px" }}
-            >
-              Add New Batch (+)
-            </Button>
+            <div className="divbtn">
+              <Button 
+                onClick={() => {
+                  setSelectedBatch(null);
+                  setBatchForm({ batchName: "", courseId: "" });
+                  setShowModal(true);
+                }}
+                className="btn btn-success"
+                style={{ marginBottom: "8px", padding: "3px", marginRight: "1100px"}}
+              >
+                Add New Batch (+)
+              </Button>
             </div>
-          </div>
-          {/* Add table-responsive class here */}
           <div className="table-responsive">
             <table className="table table-bordered">
-              <thead
-                className="table table-dark table-hover"
-                style={{ backgroundColor: "red" }}
-              >
+              <thead className="table-dark">
                 <tr>
                   <td>No</td>
                   <td>Batch ID</td>
-                  <td>Batch Name</td>
-                  <td>Course Name</td>
+                  <td>Batch Time</td>
+                  <td>Course Id</td>
                   <td>Edit</td>
                   <td>Delete</td>
                   <td>Details</td>
@@ -165,27 +144,30 @@ const BatchList = ({ onBatchAdded, user }) => {
               </thead>
               <tbody>
                 {batches.map((batch, index) => (
-                  <tr key={batch.batchId}>
+                  <tr key={batch.id}>
                     <td>{index + 1}</td>
-                    <td>{batch.batchId}</td>
+                    <td>{batch.id}</td>
                     <td>{batch.batchName}</td>
-                    <td>{batch.courseName}</td>
                     <td>
-                      <button
-                        className="btn btn-success"
-                        onClick={() => handleEdit(batch)}
-                      >
-                        Edit
-                      </button>
+                      {courses.find((course) => course.id === batch.courseId)?.name || "NA"}
                     </td>
-                    <td>
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => handleDelete(batch.batchId)}
-                      >
-                        Delete
-                      </button>
-                    </td>
+                    {/* <td>{batch.courseId}</td> */}
+                      <td>
+                        <button
+                          className="btn btn-success"
+                          onClick={() => handleEdit(batch)}
+                        >
+                          Edit
+                        </button>
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => handleDelete(batch.id)}
+                        >
+                          Delete
+                        </button>
+                      </td>
                     <td>
                       <button
                         className="btn btn-info"
@@ -208,7 +190,7 @@ const BatchList = ({ onBatchAdded, user }) => {
             <form onSubmit={handleFormSubmit}>
               <Modal.Body>
                 <div className="form-group">
-                  <label htmlFor="batchName">Batch Name</label>
+                  <label htmlFor="batchName">Batch Time</label>
                   <input
                     type="text"
                     className="form-control"
@@ -219,19 +201,19 @@ const BatchList = ({ onBatchAdded, user }) => {
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="courseName">Select Course</label>
+                  <label htmlFor="courseId">Select Course</label>
                   <select
                     className="form-control"
-                    id="courseName"
-                    name="courseName"
-                    value={batchForm.courseName}
+                    id="courseId"
+                    name="courseId"
+                    value={batchForm.courseId}
                     onChange={handleInputChange}
                   >
                     <option value="" disabled>
                       Select a course
                     </option>
                     {courses.map((course) => (
-                      <option key={course.id} value={course.name}>
+                      <option key={course.id} value={course.id}>
                         {course.name}
                       </option>
                     ))}
@@ -239,10 +221,7 @@ const BatchList = ({ onBatchAdded, user }) => {
                 </div>
               </Modal.Body>
               <Modal.Footer>
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowModal(false)}
-                >
+                <Button variant="secondary" onClick={() => setShowModal(false)}>
                   Cancel
                 </Button>
                 <Button variant="success" type="submit">
@@ -251,10 +230,7 @@ const BatchList = ({ onBatchAdded, user }) => {
               </Modal.Footer>
             </form>
           </Modal>
-          <Modal
-            show={showDetailsModal}
-            onHide={() => setShowDetailsModal(false)}
-          >
+          <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)}>
             <Modal.Header closeButton>
               <Modal.Title>Batch Details</Modal.Title>
             </Modal.Header>
@@ -262,13 +238,13 @@ const BatchList = ({ onBatchAdded, user }) => {
               {detailsBatch && (
                 <>
                   <p>
-                    <strong>Batch ID:</strong> {detailsBatch.batchId}
+                    <strong>Batch ID:</strong> {detailsBatch.id}
                   </p>
                   <p>
                     <strong>Batch Name:</strong> {detailsBatch.batchName}
                   </p>
                   <p>
-                    <strong>Course Name:</strong> {detailsBatch.courseName}
+                    <strong>Course Name:</strong> {detailsBatch.courseId}
                   </p>
                 </>
               )}
